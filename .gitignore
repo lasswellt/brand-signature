@@ -1,0 +1,15 @@
+# Local working state
+.cc-sessions/
+.claude/
+.playwright-mcp/
+
+# Test artifacts
+v1-*.png
+v2-*.png
+
+# Private reference material (not for publication)
+Signature Test.eml
+unnamed.png
+
+# Internal research notes
+docs/_research/
