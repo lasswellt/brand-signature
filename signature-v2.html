@@ -94,7 +94,7 @@
   const SITE_URL = "https://www.brandproperties.com/";
 
   const LS_NAME    = 4.5;
-  const LS_TITLE   = 4;
+  const LS_TITLE   = 4.5;
   const LS_TAGLINE = 2.25;
   const SP_TITLE   = 2;
   const SP_TAGLINE = 2;
@@ -135,7 +135,7 @@
     const addrInner = addrParts.map(esc).join('<br>');
     const rows = [
       heading(NAVY,   d.name,    '14pt', 700, LS_NAME),
-      heading(ACCENT, d.title,   '11pt', 700, LS_TITLE,   SP_TITLE),
+      heading(ACCENT, d.title,   '10pt', 700, LS_TITLE,   SP_TITLE),
       heading(ACCENT, d.tagline, '8pt',  500, LS_TAGLINE, SP_TAGLINE),
       body(`<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${addrInner}</a>`, SP_ADDR),
       ...phoneRows.map((p, i) => {
