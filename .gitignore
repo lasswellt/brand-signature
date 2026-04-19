@@ -8,6 +8,8 @@ v1-*.png
 v2-*.png
 
 # Private reference material (not for publication)
+*.eml
+*.eml:*
 Signature Test.eml
 unnamed.png
 
