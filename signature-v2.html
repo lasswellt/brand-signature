@@ -62,7 +62,6 @@
           <input id="f-ophone" type="tel" inputmode="numeric" autocomplete="tel" value="770-476-4801">
         </div>
       </div>
-      <div class="field full"><label for="f-url">Website URL</label><input id="f-url" type="url" value="https://www.brandproperties.com/"></div>
     </div>
   </div>
 
@@ -92,6 +91,7 @@
   const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>td,a,span{font-family:Calibri,Arial,sans-serif !important;}</style><![endif]-->`;
   const NAVY   = "#17365D";
   const ACCENT = "#963821";
+  const SITE_URL = "https://www.brandproperties.com/";
 
   const LS_NAME    = 4.5;
   const LS_TITLE   = 4;
@@ -126,28 +126,31 @@
     const linkStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;border:0;`;
     const spanStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;`;
     const urlStyle  = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;font-weight:bold;`;
+    const addrStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;`;
     const phoneRows = [];
     if (d.dphone) phoneRows.push({num: d.dphone, label: '(Direct)'});
     if (d.mphone) phoneRows.push({num: d.mphone, label: '(Mobile)'});
     if (d.ophone) phoneRows.push({num: d.ophone, label: '(Office)'});
-    const displayUrl = String(d.url || '').replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
+    const displayUrl = SITE_URL.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
+    const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([d.addr1, d.addr2].filter(Boolean).join(', '))}`;
+    const addrLink = (text) => `<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${esc(text)}</a>`;
     const rows = [
       heading(NAVY,   d.name,    '14pt', 700, LS_NAME),
       heading(ACCENT, d.title,   '11pt', 700, LS_TITLE,   SP_TITLE),
       heading(ACCENT, d.tagline, '8pt',  500, LS_TAGLINE, SP_TAGLINE),
-      body(esc(d.addr1), SP_ADDR),
-      body(esc(d.addr2), 0),
+      body(addrLink(d.addr1), SP_ADDR),
+      body(addrLink(d.addr2), 0),
       ...phoneRows.map((p, i) => {
         const n = tel(p.num);
         return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}">${esc(p.num)}</span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
       }),
-      displayUrl ? body(`<a href="${esc(d.url)}" target="_blank" style="${urlStyle}">${esc(displayUrl)}</a>`, SP_URL) : '',
+      displayUrl ? body(`<a href="${esc(SITE_URL)}" target="_blank" style="${urlStyle}">${esc(displayUrl)}</a>`, SP_URL) : '',
     ].join('');
-    const logo = `<tr><td style="padding:${SP_LOGO}px 0 0 0;line-height:0;font-size:0;"><a href="${esc(d.url)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="180" height="21" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:180px;height:21px;max-width:180px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
+    const logo = `<tr><td style="padding:${SP_LOGO}px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="180" height="21" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:180px;height:21px;max-width:180px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};">${rows}${logo}</table>`;
   }
 
-  const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone','url'];
+  const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone'];
   const read = () => { const o={}; fieldIds.forEach(k => o[k]=document.getElementById('f-'+k).value); return o; };
   const render = () => { sig.innerHTML = build(read()); };
   fieldIds.forEach(k => document.getElementById('f-'+k).addEventListener('input', render));

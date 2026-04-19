@@ -112,7 +112,6 @@
           <input id="f-ophone" type="tel" inputmode="numeric" autocomplete="tel" value="">
         </div>
       </div>
-      <div class="field full"><label for="f-url">Website URL (logo link)</label><input id="f-url" type="url" value="https://www.brandproperties.com/"></div>
     </div>
   </div>
 
@@ -138,6 +137,7 @@
   const FONT = "'Times New Roman', Times, serif";
   const NAVY = "#17365D";
   const ACCENT = "#963821";
+  const SITE_URL = "https://www.brandproperties.com/";
 
   // Times New Roman ships everywhere — no @font-face needed. Style block carries dark-mode swap only.
   // MSO conditional ensures classic Outlook keeps the italic serif treatment instead of falling back to Word default.
@@ -165,7 +165,7 @@
     if (data.dphone) phoneRows.push({num: data.dphone, label: '(Direct)'});
     if (data.mphone) phoneRows.push({num: data.mphone, label: '(Mobile)'});
     if (data.ophone) phoneRows.push({num: data.ophone, label: '(Office)'});
-    const displayUrl = String(data.url || '').replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
+    const displayUrl = SITE_URL.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
     const lines = [
       row(NAVY,   esc(data.name), true, '14pt'),
       row(ACCENT, esc(data.title)),
@@ -176,13 +176,13 @@
         const n = telDigits(p.num);
         return row(NAVY, `<a href="tel:+1${n}" style="${LINK_STYLE}"><span style="${SPAN_RESET}">${esc(p.num)}</span></a>&nbsp;${p.label}`);
       }),
-      displayUrl ? row(NAVY, `<a href="${esc(data.url)}" target="_blank" style="${URL_STYLE}">${esc(displayUrl)}</a>`) : '',
+      displayUrl ? row(NAVY, `<a href="${esc(SITE_URL)}" target="_blank" style="${URL_STYLE}">${esc(displayUrl)}</a>`) : '',
     ].join('');
-    const logo = `<tr><td style="padding:8px 0 0 0;line-height:0;font-size:0;"><a href="${esc(data.url)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="220" height="26" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:220px;height:26px;max-width:220px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
+    const logo = `<tr><td style="padding:8px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="220" height="26" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:220px;height:26px;max-width:220px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};line-height:1.25;">${lines}${logo}</table>`;
   }
 
-  const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone','url'];
+  const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone'];
   function read() {
     const data = {};
     fieldIds.forEach(k => { data[k] = document.getElementById('f-' + k).value; });
