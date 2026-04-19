@@ -130,14 +130,14 @@
     if (d.dphone) phoneRows.push({num: d.dphone, label: '(Direct)'});
     if (d.mphone) phoneRows.push({num: d.mphone, label: '(Mobile)'});
     if (d.ophone) phoneRows.push({num: d.ophone, label: '(Office)'});
-    const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([d.addr1, d.addr2].filter(Boolean).join(', '))}`;
-    const addrLink = (text) => `<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${esc(text)}</a>`;
+    const addrParts = [d.addr1, d.addr2].filter(Boolean);
+    const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addrParts.join(', '))}`;
+    const addrInner = addrParts.map(esc).join('<br>');
     const rows = [
       heading(NAVY,   d.name,    '14pt', 700, LS_NAME),
       heading(ACCENT, d.title,   '11pt', 700, LS_TITLE,   SP_TITLE),
       heading(ACCENT, d.tagline, '8pt',  500, LS_TAGLINE, SP_TAGLINE),
-      body(addrLink(d.addr1), SP_ADDR),
-      body(addrLink(d.addr2), 0),
+      body(`<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${addrInner}</a>`, SP_ADDR),
       ...phoneRows.map((p, i) => {
         const n = tel(p.num);
         return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}">${esc(p.num)}</span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
