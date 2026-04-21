@@ -156,7 +156,9 @@
     if (d.ophone) phoneRows.push({num: d.ophone, label: '(Office)'});
     const addrParts = [d.addr1, d.addr2].filter(Boolean);
     const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addrParts.join(', '))}`;
-    const addrInner = addrParts.map(esc).join('<br>');
+    // <font color=""> attribute survives Word's export pipeline (which strips <style> blocks and
+    // applies the MsoHyperlink class). This pins the color even when the underline can't be beaten.
+    const addrInner = `<font color="${NAVY}" face="${FONT_PLAIN}">${addrParts.map(esc).join('<br>')}</font>`;
     const rows = [
       heading(NAVY,   d.name,    '10pt', 700, LS_NAME),
       heading(ACCENT, d.title,   '6pt',  700, LS_TITLE,   SP_TITLE),
@@ -164,7 +166,7 @@
       body(`<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${addrInner}</a>`, SP_ADDR),
       ...phoneRows.map((p, i) => {
         const n = tel(p.num);
-        return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}"><font face="${FONT_PLAIN}">${esc(p.num)}</font></span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
+        return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}"><font color="${NAVY}" face="${FONT_PLAIN}">${esc(p.num)}</font></span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
       }),
     ].join('');
     const logo = `<tr><td style="padding:${SP_LOGO}px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="150" height="18" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:150px;height:18px;max-width:150px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
