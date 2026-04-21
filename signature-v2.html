@@ -98,9 +98,13 @@
   //      paste flow strips <style> blocks unpredictably, so relying on a stylesheet is fragile. Everything
   //      MSO-specific now lives inline.
   const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style>`;
-  const FONT_PLAIN = "Helvetica Neue, Helvetica, Arial, sans-serif";
-  // Word-engine property — first installed font on Windows will be Arial (third in the fallback list).
-  const MSO = `mso-ascii-font-family:${FONT_PLAIN};mso-hansi-font-family:${FONT_PLAIN};mso-bidi-font-family:${FONT_PLAIN};`;
+  // Keep the main FONT stack (with Helvetica Neue / Helvetica) for Apple Mail + WebKit clients,
+  // but give Word-engine Outlook a single, unambiguous Windows-installed font so the signature
+  // editor's font dropdown + future forward chains declare a sensible name instead of "Helvetica"
+  // (which Windows doesn't actually ship).
+  const MSO_FONT   = "Arial, sans-serif";
+  const FONT_PLAIN = MSO_FONT;
+  const MSO = `mso-ascii-font-family:${MSO_FONT};mso-hansi-font-family:${MSO_FONT};mso-bidi-font-family:${MSO_FONT};`;
   const NAVY   = "#17365D";
   const ACCENT = "#963821";
   const SITE_URL = "https://www.brandproperties.com/";
