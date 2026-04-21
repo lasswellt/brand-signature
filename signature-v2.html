@@ -88,7 +88,11 @@
   // TODO: replace @import with self-hosted WOFF2 @font-face once a CDN URL is available
   // (see docs/_research/2026-04-19_email-signature-modern-methods.md §6.1).
   // Reason: GDPR (EU recipient IPs leak to Google), CDN dependency, slightly less reliable than direct @font-face.
-  const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>td,a,span{font-family:Calibri,Arial,sans-serif !important;}</style><![endif]-->`;
+  // Outlook-classic note: the MSO conditional previously targeted `a, span` too, which fought Word's built-in
+  // Hyperlink character style and caused pasted phone numbers to render in a different font than the rest
+  // of the signature. Restricting to `td` lets anchors inherit naturally.
+  const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>td{font-family:Calibri,Arial,sans-serif !important;}</style><![endif]-->`;
+  const FONT_PLAIN = "Helvetica Neue, Helvetica, Arial, sans-serif";
   const NAVY   = "#17365D";
   const ACCENT = "#963821";
   const SITE_URL = "https://www.brandproperties.com/";
@@ -140,7 +144,7 @@
       body(`<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${addrInner}</a>`, SP_ADDR),
       ...phoneRows.map((p, i) => {
         const n = tel(p.num);
-        return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}">${esc(p.num)}</span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
+        return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}"><font face="${FONT_PLAIN}">${esc(p.num)}</font></span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
       }),
     ].join('');
     const logo = `<tr><td style="padding:${SP_LOGO}px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="180" height="21" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:180px;height:21px;max-width:180px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;

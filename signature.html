@@ -141,7 +141,10 @@
 
   // Times New Roman ships everywhere — no @font-face needed. Style block carries dark-mode swap only.
   // MSO conditional ensures classic Outlook keeps the italic serif treatment instead of falling back to Word default.
-  const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>td,a,span{font-family:'Times New Roman',Times,serif !important;font-style:italic !important;}</style><![endif]-->`;
+  // Restrict MSO override to td so anchors inherit naturally — previously the a, span rule fought Word's
+  // built-in Hyperlink character style and made pasted phone numbers render in a different font.
+  const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>td{font-family:'Times New Roman',Times,serif !important;font-style:italic !important;}</style><![endif]-->`;
+  const FONT_PLAIN = "Times New Roman, Times, serif";
 
   const LINK_STYLE = `color:${NAVY};text-decoration:none;font-style:italic;font-family:${FONT};font-size:11pt;border:0;`;
   const SPAN_RESET = `color:${NAVY};text-decoration:none;font-style:italic;font-family:${FONT};font-size:11pt;`;
@@ -172,7 +175,7 @@
       row(NAVY,   esc(data.addr2)),
       ...phoneRows.map((p, i) => {
         const n = telDigits(p.num);
-        return row(NAVY, `<a href="tel:+1${n}" style="${LINK_STYLE}"><span style="${SPAN_RESET}">${esc(p.num)}</span></a>&nbsp;${p.label}`);
+        return row(NAVY, `<a href="tel:+1${n}" style="${LINK_STYLE}"><span style="${SPAN_RESET}"><font face="${FONT_PLAIN}">${esc(p.num)}</font></span></a>&nbsp;${p.label}`);
       }),
     ].join('');
     const logo = `<tr><td style="padding:8px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="180" height="21" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:180px;height:21px;max-width:180px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
