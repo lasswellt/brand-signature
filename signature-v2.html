@@ -88,11 +88,19 @@
   // TODO: replace @import with self-hosted WOFF2 @font-face once a CDN URL is available
   // (see docs/_research/2026-04-19_email-signature-modern-methods.md §6.1).
   // Reason: GDPR (EU recipient IPs leak to Google), CDN dependency, slightly less reliable than direct @font-face.
-  // Outlook-classic note: the MSO conditional previously targeted `a, span` too, which fought Word's built-in
-  // Hyperlink character style and caused pasted phone numbers to render in a different font than the rest
-  // of the signature. Restricting to `td` lets anchors inherit naturally.
-  const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>td{font-family:Calibri,Arial,sans-serif !important;}</style><![endif]-->`;
+  // Outlook-classic (Word engine) applies its built-in "Hyperlink" character style to every <a> element
+  // and overrides the inline font-family — this made pasted phone numbers render in Calibri/Aptos while
+  // the rest of the signature rendered in the fallback. Fix strategy (from goodemailcode.com, Email on Acid):
+  //   1. Inline mso-ascii-font-family on every td / anchor / span style string — the Word-engine specific
+  //      property that actually beats the hyperlink character style.
+  //   2. Wrap phone numbers in <font face="..."> (already done) — respected even when Word re-processes.
+  //   3. Drop the stylesheet-level <!--[if mso]>…<![endif]--> rule entirely. Outlook's signature-editor
+  //      paste flow strips <style> blocks unpredictably, so relying on a stylesheet is fragile. Everything
+  //      MSO-specific now lives inline.
+  const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style>`;
   const FONT_PLAIN = "Helvetica Neue, Helvetica, Arial, sans-serif";
+  // Word-engine property — first installed font on Windows will be Arial (third in the fallback list).
+  const MSO = `mso-ascii-font-family:${FONT_PLAIN};mso-hansi-font-family:${FONT_PLAIN};mso-bidi-font-family:${FONT_PLAIN};`;
   const NAVY   = "#17365D";
   const ACCENT = "#963821";
   const SITE_URL = "https://www.brandproperties.com/";
@@ -118,18 +126,18 @@
   const heading = (color, text, size, weight, tracking, topPad=0) => {
     const pad = topPad ? `padding:${topPad}px 0 0 0;` : 'padding:0;';
     const cls = color === NAVY ? ' class="bp-navy"' : '';
-    return `<tr><td${cls} style="${pad}font-family:${FONT};font-size:${size};font-weight:${weight};color:${color};letter-spacing:${tracking}px;text-transform:uppercase;line-height:1.1;mso-line-height-rule:exactly;">${esc(text)}</td></tr>`;
+    return `<tr><td${cls} style="${pad}font-family:${FONT};${MSO}font-size:${size};font-weight:${weight};color:${color};letter-spacing:${tracking}px;text-transform:uppercase;line-height:1.1;mso-line-height-rule:exactly;">${esc(text)}</td></tr>`;
   };
   const body = (innerHtml, topPad=0, bold=false) => {
     const pad = topPad ? `padding:${topPad}px 0 0 0;` : 'padding:0;';
     const wt  = bold ? 'font-weight:bold;' : 'font-weight:normal;';
-    return `<tr><td class="bp-navy" style="${pad}font-family:${FONT};font-size:10pt;${wt}color:${NAVY};line-height:1.25;mso-line-height-rule:exactly;">${innerHtml}</td></tr>`;
+    return `<tr><td class="bp-navy" style="${pad}font-family:${FONT};${MSO}font-size:10pt;${wt}color:${NAVY};line-height:1.25;mso-line-height-rule:exactly;">${innerHtml}</td></tr>`;
   };
 
   function build(d) {
-    const linkStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;border:0;`;
-    const spanStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;`;
-    const addrStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};font-size:10pt;`;
+    const linkStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};${MSO}font-size:10pt;border:0;`;
+    const spanStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};${MSO}font-size:10pt;`;
+    const addrStyle = `color:${NAVY};text-decoration:none;font-family:${FONT};${MSO}font-size:10pt;`;
     const phoneRows = [];
     if (d.dphone) phoneRows.push({num: d.dphone, label: '(Direct)'});
     if (d.mphone) phoneRows.push({num: d.mphone, label: '(Mobile)'});
@@ -148,7 +156,7 @@
       }),
     ].join('');
     const logo = `<tr><td style="padding:${SP_LOGO}px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="180" height="21" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:180px;height:21px;max-width:180px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
-    return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};">${rows}${logo}</table>`;
+    return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}">${rows}${logo}</table>`;
   }
 
   const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone'];
