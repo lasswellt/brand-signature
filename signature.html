@@ -145,7 +145,10 @@
   // inline font-family. Fix (per goodemailcode.com / Email on Acid): inline mso-ascii-font-family on every
   // styled element. The stylesheet-level [if mso] block is dropped because Outlook's signature paste flow
   // strips <style> blocks unpredictably — everything MSO-specific now lives inline.
-  const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style>`;
+  // `<!--[if mso]>…<![endif]-->` conditional: Word parses these stylesheets and honors !important at the
+  // stylesheet level, unlike inline !important which Word's CSS parser ignores. Overrides the built-in
+  // Hyperlink character style that otherwise forces an underline on every <a>.
+  const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>a,a:link,a:visited{text-decoration:none !important;color:#17365D !important;}</style><![endif]-->`;
   const FONT_PLAIN = "Times New Roman, Times, serif";
   const MSO = `mso-ascii-font-family:${FONT_PLAIN};mso-hansi-font-family:${FONT_PLAIN};mso-bidi-font-family:${FONT_PLAIN};`;
 

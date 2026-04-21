@@ -97,7 +97,11 @@
   //   3. Drop the stylesheet-level <!--[if mso]>…<![endif]--> rule entirely. Outlook's signature-editor
   //      paste flow strips <style> blocks unpredictably, so relying on a stylesheet is fragile. Everything
   //      MSO-specific now lives inline.
-  const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style>`;
+  // `<!--[if mso]>…<![endif]-->` conditional: Word parses these stylesheets (unlike the main <style> block
+  // which Outlook signature-paste flow may strip). The a,a:link,a:visited rule with !important overrides
+  // Word's built-in Hyperlink character style at the stylesheet level — inline !important doesn't reliably
+  // beat it because Word's CSS parser doesn't always honor !important on inline attrs.
+  const FONT_STYLE = `<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>a,a:link,a:visited{text-decoration:none !important;color:#17365D !important;}</style><![endif]-->`;
   // Word-engine Outlook can't load @font-face web fonts, but it CAN use a locally-installed font
   // if the recipient has one. Declaring "Montserrat, Arial, sans-serif" means Word will pick
   // Montserrat when the recipient has it installed on Windows, cleanly falling back to Arial
