@@ -114,11 +114,11 @@
   const ACCENT = "#963821";
   const SITE_URL = "https://www.brandproperties.com/";
 
-  const LS_NAME    = 4.5;
-  const LS_TITLE   = 6;
-  const LS_TAGLINE = 2.25;
-  const SP_TITLE   = 6;
-  const SP_TAGLINE = 4;
+  const LS_NAME    = 3;
+  const LS_TITLE   = 4;
+  const LS_TAGLINE = 1.5;
+  const SP_TITLE   = 4;
+  const SP_TAGLINE = 3;
   const SP_ADDR    = 10;
   const SP_PHONE1  = 8;
   const SP_PHONE   = 2;
@@ -140,16 +140,16 @@
   const body = (innerHtml, topPad=0, bold=false) => {
     const pad = topPad ? `padding:${topPad}px 0 0 0;` : 'padding:0;';
     const wt  = bold ? 'font-weight:bold;' : 'font-weight:normal;';
-    return `<tr><td class="bp-navy" style="${pad}font-family:${FONT};${MSO}font-size:9pt;${wt}color:${NAVY};line-height:1.25;mso-line-height-rule:exactly;">${innerHtml}</td></tr>`;
+    return `<tr><td class="bp-navy" style="${pad}font-family:${FONT};${MSO}font-size:7pt;${wt}color:${NAVY};line-height:1.25;mso-line-height-rule:exactly;">${innerHtml}</td></tr>`;
   };
 
   function build(d) {
     // `text-decoration:none !important` + Word-specific `text-underline:none` beats Word's built-in
     // Hyperlink character style, which otherwise forces an underline even when inline CSS says no.
     const NO_UL = `text-decoration:none !important;text-underline:none;`;
-    const linkStyle = `color:${NAVY};${NO_UL}font-family:${FONT};${MSO}font-size:9pt;border:0;`;
-    const spanStyle = `color:${NAVY};${NO_UL}font-family:${FONT};${MSO}font-size:9pt;`;
-    const addrStyle = `color:${NAVY};${NO_UL}font-family:${FONT};${MSO}font-size:9pt;`;
+    const linkStyle = `color:${NAVY};${NO_UL}font-family:${FONT};${MSO}font-size:7pt;border:0;`;
+    const spanStyle = `color:${NAVY};${NO_UL}font-family:${FONT};${MSO}font-size:7pt;`;
+    const addrStyle = `color:${NAVY};${NO_UL}font-family:${FONT};${MSO}font-size:7pt;`;
     const phoneRows = [];
     if (d.dphone) phoneRows.push({num: d.dphone, label: '(Direct)'});
     if (d.mphone) phoneRows.push({num: d.mphone, label: '(Mobile)'});
@@ -158,9 +158,9 @@
     const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addrParts.join(', '))}`;
     const addrInner = addrParts.map(esc).join('<br>');
     const rows = [
-      heading(NAVY,   d.name,    '12pt', 700, LS_NAME),
-      heading(ACCENT, d.title,   '8pt',  700, LS_TITLE,   SP_TITLE),
-      heading(ACCENT, d.tagline, '7pt',  500, LS_TAGLINE, SP_TAGLINE),
+      heading(NAVY,   d.name,    '10pt', 700, LS_NAME),
+      heading(ACCENT, d.title,   '6pt',  700, LS_TITLE,   SP_TITLE),
+      heading(ACCENT, d.tagline, '5pt',  500, LS_TAGLINE, SP_TAGLINE),
       body(`<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${addrInner}</a>`, SP_ADDR),
       ...phoneRows.map((p, i) => {
         const n = tel(p.num);
