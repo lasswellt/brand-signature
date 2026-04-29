@@ -187,7 +187,7 @@
   const render = () => { sig.innerHTML = build(read()); };
   fieldIds.forEach(k => document.getElementById('f-'+k).addEventListener('input', render));
   const formatPhone = (e) => { const v = e.target.value.replace(/\D/g, ''); e.target.value = v.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12); render(); };
-  ['dphone', 'mphone', 'ophone', 'fax'].forEach(k => document.getElementById('f-'+k).addEventListener('input', formatPhone));
+  ['dphone', 'mphone', 'ophone'].forEach(k => document.getElementById('f-'+k).addEventListener('input', formatPhone));
   render();
 
   let t;
