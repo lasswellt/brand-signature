@@ -176,7 +176,7 @@
     const lines = [
       row(NAVY,   esc(data.name), true, '14pt'),
       row(ACCENT, esc(data.title)),
-      row(ACCENT, esc(data.tagline) + '&nbsp;'),
+      ...(data.tagline ? [row(ACCENT, esc(data.tagline) + '&nbsp;')] : []),
       row(NAVY,   esc(data.addr1) + '&nbsp;'),
       row(NAVY,   esc(data.addr2)),
       ...phoneRows.map((p, i) => {
