@@ -61,6 +61,10 @@
           <label for="f-ophone">Office phone</label>
           <input id="f-ophone" type="tel" inputmode="numeric" autocomplete="tel" value="770-476-4801">
         </div>
+        <div class="field">
+          <label for="f-fax">Fax</label>
+          <input id="f-fax" type="tel" inputmode="numeric" autocomplete="tel" value="">
+        </div>
       </div>
     </div>
   </div>
@@ -153,6 +157,7 @@
     if (d.dphone) phoneRows.push({num: d.dphone, label: '(Direct)'});
     if (d.mphone) phoneRows.push({num: d.mphone, label: '(Mobile)'});
     if (d.ophone) phoneRows.push({num: d.ophone, label: '(Office)'});
+    if (d.fax)    phoneRows.push({num: d.fax,    label: '(Fax)', noLink: true});
     const addrParts = [d.addr1, d.addr2].filter(Boolean);
     const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addrParts.join(', '))}`;
     // <font color=""> attribute survives Word's export pipeline (which strips <style> blocks and
@@ -164,20 +169,25 @@
       heading(ACCENT, d.tagline, '7pt',  500, LS_TAGLINE, SP_TAGLINE),
       body(`<a href="${esc(mapsHref)}" target="_blank" style="${addrStyle}">${addrInner}</a>`, SP_ADDR),
       ...phoneRows.map((p, i) => {
+        const pad = i === 0 ? SP_PHONE1 : SP_PHONE;
+        const numHtml = `<font color="${NAVY}" face="${FONT_PLAIN}">${esc(p.num)}</font>`;
+        if (p.noLink) {
+          return body(`<span style="${spanStyle}">${numHtml}</span>&nbsp;${p.label}`, pad);
+        }
         const n = tel(p.num);
-        return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}"><font color="${NAVY}" face="${FONT_PLAIN}">${esc(p.num)}</font></span></a>&nbsp;${p.label}`, i === 0 ? SP_PHONE1 : SP_PHONE);
+        return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}">${numHtml}</span></a>&nbsp;${p.label}`, pad);
       }),
     ].join('');
     const logo = `<tr><td style="padding:${SP_LOGO}px 0 0 0;line-height:0;font-size:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:inline-block;"><img src="data:image/png;base64,${LOGO_B64}" width="150" height="18" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:150px;height:18px;max-width:150px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}">${rows}${logo}</table>`;
   }
 
-  const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone'];
+  const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone','fax'];
   const read = () => { const o={}; fieldIds.forEach(k => o[k]=document.getElementById('f-'+k).value); return o; };
   const render = () => { sig.innerHTML = build(read()); };
   fieldIds.forEach(k => document.getElementById('f-'+k).addEventListener('input', render));
   const formatPhone = (e) => { const v = e.target.value.replace(/\D/g, ''); e.target.value = v.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12); render(); };
-  ['dphone', 'mphone', 'ophone'].forEach(k => document.getElementById('f-'+k).addEventListener('input', formatPhone));
+  ['dphone', 'mphone', 'ophone', 'fax'].forEach(k => document.getElementById('f-'+k).addEventListener('input', formatPhone));
   render();
 
   let t;
