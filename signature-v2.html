@@ -84,13 +84,19 @@
       paste into <b>Settings &rarr; Mail &rarr; Signature</b>, then (on older iOS) shake the phone and tap <b>Undo</b> once to keep HTML formatting.
     </p>
     <p class="hint" style="margin-top:0.5rem;">
+      <b>Why the logo survives iPhone replies:</b> iOS Mail strips every <code>&lt;img&gt;</code> element when quoting
+      the original message, replacing it with a dash. This signature renders the logo as a CSS <code>background-image</code>
+      on a clickable box (no <code>&lt;img&gt;</code>), so iOS has nothing to strip and the logo stays visible in the quoted reply.
+      Outlook gets the same image via a VML fallback.
+    </p>
+    <p class="hint" style="margin-top:0.5rem;">
       <b>iPhone setup &mdash; stop the &ldquo;Include Attachment?&rdquo; prompt on forwards:</b>
       Go to <b>Settings &rarr; Mail &rarr; Include Attachments with Replies</b> and pick <b>Never</b> (or <b>Always</b>).
       The default <b>Ask</b> is what triggers the prompt &mdash; iOS asks for every forward regardless of whether the image is hosted or embedded.
       The logo here is loaded from a hosted URL, so &ldquo;Never&rdquo; still leaves the logo intact for the recipient (loaded from the web).
     </p>
   </div>
-  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 46</p>
+  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 47</p>
 </div>
 
 <div class="toast" id="toast">Copied</div>
@@ -189,7 +195,7 @@
         return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}">${numHtml}</span></a>&nbsp;${p.label}`, pad);
       }),
     ].join('');
-    const logo = `<tr><td valign="bottom" style="padding:0;font-size:0;line-height:40px;mso-line-height-rule:exactly;vertical-align:bottom;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:inline-block;line-height:40px;"><img src="${LOGO_URL}" width="250" height="20" alt="BrandProperties.com" loading="lazy" referrerpolicy="no-referrer" style="display:block;border:0;outline:none;text-decoration:none;width:250px;height:20px;max-width:250px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
+    const logo = `<tr><td valign="bottom" style="padding:0;font-size:0;line-height:0;vertical-align:bottom;"><!--[if mso]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" fillcolor="none" stroked="f" style="width:250px;height:20px;" o:button="t" href="${esc(SITE_URL)}"><v:fill type="frame" src="${LOGO_URL}" /></v:rect><![endif]--><!--[if !mso]><!--><a href="${esc(SITE_URL)}" target="_blank" aria-label="BrandProperties.com" style="display:inline-block;width:250px;height:20px;background-image:url('${LOGO_URL}');background-repeat:no-repeat;background-position:left top;background-size:250px 20px;text-decoration:none !important;text-underline:none;border:0;line-height:20px;font-size:0;color:transparent;">&nbsp;</a><!--<![endif]--></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}">${rows}${logo}</table>`;
   }
 
