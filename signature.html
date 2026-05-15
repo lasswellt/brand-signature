@@ -101,7 +101,6 @@
         <div class="field">
           <label for="f-dphone">Direct phone</label>
           <input id="f-dphone" type="tel" inputmode="numeric" autocomplete="tel" value="770-497-6482">
-          <span class="hint">Click-to-call uses digits only.</span>
         </div>
         <div class="field">
           <label for="f-mphone">Mobile phone</label>
@@ -180,7 +179,7 @@
     if (data.fax)    phoneRows.push({num: data.fax,    label: '(Fax)', noLink: true});
     const lines = [
       row(NAVY,   esc(data.name), true, '14pt'),
-      row(ACCENT, esc(data.title)),
+      row(ACCENT, esc(data.title), true),
       ...(data.tagline ? [row(ACCENT, esc(data.tagline) + '&nbsp;')] : []),
       row(NAVY,   esc(data.addr1) + '&nbsp;'),
       row(NAVY,   esc(data.addr2)),
