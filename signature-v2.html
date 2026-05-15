@@ -79,7 +79,7 @@
       <b>Gmail / Apple Mail / new Outlook:</b> click <b>Copy formatted signature</b> and paste into the client's signature settings.
     </p>
   </div>
-  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 37</p>
+  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 38</p>
 </div>
 
 <div class="toast" id="toast">Copied</div>
@@ -179,7 +179,7 @@
       }),
     ].join('');
     const spacer = `<tr><td height="${SP_LOGO}" style="height:${SP_LOGO}px;font-size:0;line-height:0;mso-line-height-rule:exactly;"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="${SP_LOGO}" alt="" style="display:block;border:0;outline:none;height:${SP_LOGO}px;width:1px;line-height:0;font-size:0;"></td></tr>`;
-    const logo = `<tr><td style="padding:4px 0 0 0;mso-padding-alt:4px 0 0 0;line-height:20px;font-size:0;mso-line-height-rule:exactly;">&zwnj;<a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:inline-block;line-height:20px;"><img src="data:image/png;base64,${LOGO_B64}" width="250" height="20" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:250px;height:20px;max-width:250px;-ms-interpolation-mode:bicubic;vertical-align:top;"></a></td></tr>`;
+    const logo = `<tr><td style="padding:4px 0 0 0;mso-padding-alt:4px 0 0 0;font-size:0;line-height:0;"><table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td style="padding:0;font-size:0;line-height:0;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:block;"><img src="data:image/png;base64,${LOGO_B64}" width="250" height="20" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:250px;height:20px;max-width:250px;-ms-interpolation-mode:bicubic;"></a></td></tr></table></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}">${rows}${spacer}${logo}</table>`;
   }
 
