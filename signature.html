@@ -129,8 +129,14 @@
       After clicking <b>Copy formatted signature</b>, paste into Gmail / Outlook / Apple Mail signature settings.
       The <b>HTML source</b> button is for signature tools that accept raw markup.
     </p>
+    <p class="hint" style="margin-top:0.5rem;">
+      <b>iPhone setup:</b> iOS Mail won&rsquo;t let you paste a rich signature directly in Settings.
+      Email this signature to yourself first, open the email on your iPhone, long-press &rarr; Select All &rarr; Copy,
+      then paste into Settings &rarr; Mail &rarr; Signature. The logo is loaded from a hosted URL (no embedded image),
+      so forwards/replies won&rsquo;t prompt you to &ldquo;include attachment&rdquo;.
+    </p>
   </div>
-  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v1 &middot; build 43</p>
+  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v1 &middot; build 44</p>
 </div>
 
 <div class="toast" id="toast">Copied</div>
@@ -193,7 +199,7 @@
         return row(NAVY, `<a href="tel:+1${n}" style="${LINK_STYLE}"><span style="${SPAN_RESET}">${numHtml}</span></a>&nbsp;${p.label}`);
       }),
     ].join('');
-    const logo = `<tr><td valign="bottom" style="padding:0;font-size:0;line-height:40px;mso-line-height-rule:exactly;vertical-align:bottom;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:inline-block;line-height:40px;"><img src="${LOGO_URL}" width="250" height="20" alt="BrandProperties.com" style="display:block;border:0;outline:none;text-decoration:none;width:250px;height:20px;max-width:250px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
+    const logo = `<tr><td valign="bottom" style="padding:0;font-size:0;line-height:40px;mso-line-height-rule:exactly;vertical-align:bottom;"><a href="${esc(SITE_URL)}" target="_blank" style="text-decoration:none !important;text-underline:none;border:0;display:inline-block;line-height:40px;"><img src="${LOGO_URL}" width="250" height="20" alt="BrandProperties.com" loading="lazy" referrerpolicy="no-referrer" style="display:block;border:0;outline:none;text-decoration:none;width:250px;height:20px;max-width:250px;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}line-height:1.25;">${lines}${logo}</table>`;
   }
 
