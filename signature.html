@@ -153,7 +153,7 @@
   </div>
 
   <header class="page-head">
-    <img src="logo-header-2x.png" width="250" height="39" alt="Brand Properties">
+    <img src="logo-header-2x.png" width="250" height="28" alt="Brand Properties">
     <h1>Brand Properties Email Signature</h1>
     <p>Fill in your details below, check the preview, then click Copy and paste it into your email signature settings.</p>
   </header>
@@ -219,7 +219,7 @@
     </ul>
   </section>
 
-  <p class="foot">v1 &middot; build 59</p>
+  <p class="foot">v1 &middot; build 60</p>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">Copied</div>
@@ -236,18 +236,22 @@
 
   // Logo: a SINGLE hosted PNG over https — never base64 or SVG. Gmail (all platforms)
   // and new Outlook block base64 data: URIs, and Gmail can't render SVG.
-  // Delivered at 1x: the PNG is 250x39 — its intrinsic pixels EQUAL the display size.
+  // Delivered at 1x: the PNG is 250x28 — its intrinsic pixels EQUAL the display size.
   // This is deliberate and must NOT be "upgraded" to a 2x/3x retina oversample: when a
   // recipient forwards/replies, Outlook & others strip the width/height markup, and the
   // image then renders at its INTRINSIC size. A 1000x144 (4x) source rendered this size
-  // explodes to ~4x on forward — the giant-logo bug. At 1x it forwards at the right size.
+  // explodes to ~9x on forward — the giant-logo bug. At 1x it forwards at the right size.
   // (DPI/pHYs metadata can't substitute for pixels: clients map 1 img px -> 1 CSS px and
   // ignore the DPI tag, so retina crispness only ever comes from more pixels = the very
   // thing that breaks forwarding. We trade a little retina sharpness for forward-safety.)
-  // The wordmark (~21px tall) sits flush-left with 11px transparent padding ABOVE it and
-  // ~7px below — the big TOP cushion is load-bearing: Outlook Classic's Word engine shears
-  // ~8-10px off the TOP of the image, so the cushion absorbs the clip instead of the
-  // letters. Do NOT shrink the top padding (that reintroduced the top-clip at build 55).
+  // The wordmark (~21px tall) sits flush-left with just ~4px transparent padding above and
+  // ~3px below. ROOT CAUSE of the old top-clip (builds 50-59): the logo cell pinned
+  // line-height:0 with mso-line-height-rule:exactly, which makes Outlook's Word engine shear
+  // the image down to that 0px ceiling. Fix (build 60): set the cell line-height = the image
+  // height (28px), so the line-box contains the image and Word has nothing to clip — no big
+  // cushion needed. line-height MUST stay == the height attr (28); if the logo height changes,
+  // change both together or the clip/gap returns. Refs: Litmus, emailonacid, tabular.email,
+  // caniemail — mso-line-height-rule:exactly with line-height < image height crops the image.
   // Master at logo-header-master-4x.png.
   const LOGO_URL = "https://lasswellt.github.io/brand-signature/logo-header-2x.png";
   const FONT     = "'Times New Roman', Times, serif";
@@ -263,7 +267,7 @@
   //      and ignores inline !important, so the underline/color override must live in a
   //      stylesheet. Per-element inline mso-ascii-font-family (MSO, below) is ALSO used
   //      to hold Times New Roman against Word's defaults. Both are needed together.
-  const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>a,a:link,a:visited{text-decoration:none !important;color:#01426A !important;}td.bp-logo-cell{line-height:0 !important;font-size:0 !important;mso-line-height-rule:exactly !important;}</style><![endif]-->`;
+  const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>a,a:link,a:visited{text-decoration:none !important;color:#01426A !important;}td.bp-logo-cell{line-height:28px !important;font-size:0 !important;mso-line-height-rule:exactly !important;}</style><![endif]-->`;
   const FONT_PLAIN = "Times New Roman, Times, serif";
   const MSO = `mso-ascii-font-family:${FONT_PLAIN};mso-hansi-font-family:${FONT_PLAIN};mso-bidi-font-family:${FONT_PLAIN};`;
 
@@ -313,15 +317,16 @@
     // TEXT BLOCK — its own table, so its line-height context never reaches the logo cell.
     const textTable = `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}line-height:1.25;">${lines}</table>`;
 
-    // LOGO BLOCK — ISOLATED in its own row, clip-proof by construction (Outlook Classic
-    // clips images trapped in a text line-box; see notes above LOGO_URL). Defenses, layered:
+    // LOGO BLOCK — ISOLATED in its own row. Outlook-clip defenses, layered:
     //   1. own row, image-only cell (not a sibling of the text cells' line-box)
-    //   2. collapsed line-box on the cell: font-size:0; line-height:0
-    //   3. display:block image — removed from the inline/baseline flow Word clips into
+    //   2. cell line-height = the image height (28px) + mso-line-height-rule:exactly — the
+    //      line-box exactly contains the image so Word's "exactly" ruler has nothing to clip.
+    //      (font-size:0 still kills any stray whitespace glyph; line-height:0 here was the BUG.)
+    //   3. display:block image — removes the inline/baseline descender gap in non-Outlook clients
     //   4. width/height as HTML ATTRIBUTES (DPI-immune in Word) + matching inline CSS
-    //   5. ~8px transparent padding baked into the PNG so any residual clip eats empty pixels
-    // Gap above the logo is set by the cell's padding-top, NEVER by line-height.
-    const logoCell = `<td class="bp-logo-cell" align="left" valign="top" style="padding:0;font-size:0;line-height:0;mso-line-height-rule:exactly;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;outline:none;text-decoration:none;"><img src="${esc(LOGO_URL)}" width="250" height="39" alt="BrandProperties.com" border="0" style="display:block;width:250px;height:39px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;font-size:0;line-height:0;"></a></td>`;
+    //   5. ~4px transparent padding baked into the PNG for breathing room (no longer load-bearing)
+    // Gap above the logo is the cell's padding-top (0) + the PNG's ~4px cushion, NEVER line-height.
+    const logoCell = `<td class="bp-logo-cell" align="left" valign="top" style="padding:0;font-size:0;line-height:28px;mso-line-height-rule:exactly;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;outline:none;text-decoration:none;"><img src="${esc(LOGO_URL)}" width="250" height="28" alt="BrandProperties.com" border="0" style="display:block;width:250px;height:28px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td>`;
 
     // Outer wrapper stacks text (row 1) above logo (row 2) so the logo cell is a sibling ROW,
     // never sharing the text cells' line-box.
