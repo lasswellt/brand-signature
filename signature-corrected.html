@@ -1,0 +1,59 @@
+<!--
+  Brand Properties email signature — corrected, paste-safe HTML snippet
+  ===================================================================
+  Paste this into the Gmail / Outlook / Apple Mail signature editor.
+  Logo is a SINGLE hosted retina PNG over HTTPS — NO base64, NO SVG.
+  Rationale (verified against caniemail.com raw data, 2026-06-15):
+    - Gmail (web + iOS + Android) does NOT render base64 data: URIs  -> base64 logo = broken
+    - New Outlook for Windows does NOT render base64                 -> base64 logo = broken
+    - Gmail web does NOT render SVG; Gmail mobile only on non-Google accounts
+    - Microsoft retired inline SVG in Outlook.com + new Outlook (Sep-Oct 2025)
+    - A hosted PNG over https renders in ALL of the above + Apple Mail + classic Outlook.
+
+  Template variables (replace before use):
+    {{NAME}}          person's full name              e.g. Hannah Gomez
+    {{TITLE}}         job title                       e.g. Marketing Coordinator
+    {{TAGLINE}}       tagline                         e.g. Management | Leasing | Advisory
+    {{ADDR1}}         street address                  e.g. 6224 Sugarloaf Parkway, Suite 200
+    {{ADDR2}}         city, state ZIP                 e.g. Duluth, GA 30097
+    {{DIRECT_PHONE}}  direct phone, display format    e.g. 770-497-6482
+    {{DIRECT_DIGITS}} direct phone, E.164 for tel:    e.g. +17704976482
+    {{MOBILE_PHONE}}  mobile phone, display format    e.g. 404-307-1955
+    {{MOBILE_DIGITS}} mobile phone, E.164 for tel:    e.g. +14043071955
+    {{SITE_URL}}      absolute https site URL         e.g. https://www.brandproperties.com/
+    {{LOGO_URL_2X}}   absolute https URL to a transparent retina PNG
+                      (export at 500x40 @2x or 750x60 @3x; displayed at 250x20)
+
+  Dark mode: the <style> block below is a BEST-EFFORT progressive enhancement.
+  Apple Mail (and some Outlook desktop) keep it and swap navy -> lighter blue on a
+  dark canvas. Gmail / Outlook.com strip <style> on paste, so the inline #01426A is
+  the fallback there. There is NO inline equivalent for prefers-color-scheme.
+-->
+<style>@media (prefers-color-scheme:dark){.bp-navy{color:#6FA8DC !important;}}</style>
+<!--[if mso]><style>a,a:link,a:visited{text-decoration:none !important;color:#01426A !important;}</style><![endif]-->
+<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;line-height:1.25;mso-line-height-rule:exactly;">
+  <tr>
+    <td class="bp-navy" style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:14pt;font-weight:bold;font-style:italic;color:#01426A;line-height:1.25;mso-line-height-rule:exactly;">{{NAME}}</td>
+  </tr>
+  <tr>
+    <td style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;font-weight:bold;font-style:italic;color:#963821;line-height:1.25;mso-line-height-rule:exactly;">{{TITLE}}</td>
+  </tr>
+  <tr>
+    <td style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;font-style:italic;color:#963821;line-height:1.25;mso-line-height-rule:exactly;">{{TAGLINE}}&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="bp-navy" style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;font-style:italic;color:#01426A;line-height:1.25;mso-line-height-rule:exactly;">{{ADDR1}}&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="bp-navy" style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;font-style:italic;color:#01426A;line-height:1.25;mso-line-height-rule:exactly;">{{ADDR2}}</td>
+  </tr>
+  <tr>
+    <td class="bp-navy" style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;font-style:italic;color:#01426A;line-height:1.25;mso-line-height-rule:exactly;"><a href="tel:{{DIRECT_DIGITS}}" style="color:#01426A;text-decoration:none;text-underline:none;font-style:italic;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;border:0;"><font color="#01426A" face="Times New Roman, Times, serif">{{DIRECT_PHONE}}</font></a>&nbsp;(Direct)</td>
+  </tr>
+  <tr>
+    <td class="bp-navy" style="padding:0;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;font-style:italic;color:#01426A;line-height:1.25;mso-line-height-rule:exactly;"><a href="tel:{{MOBILE_DIGITS}}" style="color:#01426A;text-decoration:none;text-underline:none;font-style:italic;font-family:'Times New Roman', Times, serif;mso-ascii-font-family:'Times New Roman', Times, serif;mso-hansi-font-family:'Times New Roman', Times, serif;mso-bidi-font-family:'Times New Roman', Times, serif;font-size:11pt;border:0;"><font color="#01426A" face="Times New Roman, Times, serif">{{MOBILE_PHONE}}</font></a>&nbsp;(Mobile)</td>
+  </tr>
+  <tr>
+    <td valign="bottom" style="padding:8px 0 0 0;font-size:0;line-height:0;mso-line-height-rule:exactly;vertical-align:bottom;"><a href="{{SITE_URL}}" target="_blank" style="display:block;border:0;text-decoration:none;line-height:0;"><img src="{{LOGO_URL_2X}}" width="250" height="20" alt="BrandProperties.com" style="display:block;width:250px;height:20px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td>
+  </tr>
+</table>
