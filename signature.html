@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Brand Properties Email Signature Generator</title>
+<title>Brand Properties Email Signature</title>
+<!-- Inline favicon (navy "B" tile) so the page never 404s on /favicon.ico — no network request. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2301426A'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='21' fill='white' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
 <style>
   :root {
     --navy: #01426A;
     --accent: #963821;
     --ink: #111827;
-    --muted: #6b7280;
+    --muted: #4b5563;        /* darkened from #6b7280 for AA-comfortable small text */
     --border: #e5e7eb;
     --bg: #f5f7fa;
   }
@@ -18,16 +20,38 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0; padding: 2rem; background: var(--bg); color: var(--ink);
   }
-  .app { max-width: 960px; margin: 0 auto; overflow-x: hidden; }
+  .app { max-width: 720px; margin: 0 auto; overflow-x: hidden; }
+
+  /* Page header / orientation */
+  .page-head { text-align: center; margin-bottom: 1.5rem; }
+  .page-head img { display: inline-block; width: 240px; max-width: 72%; height: auto; }
+  .page-head h1 { margin: 0.85rem 0 0.35rem; font-size: 1.375rem; color: var(--navy); letter-spacing: 0.01em; }
+  .page-head p { margin: 0 auto; max-width: 34rem; color: var(--muted); font-size: 0.9375rem; line-height: 1.5; }
+
   .card {
     background: #fff; border: 1px solid var(--border); border-radius: 10px;
     padding: 1.5rem; margin-bottom: 1.25rem;
     box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   }
-  h1 { margin: 0 0 1rem; font-size: 1.0625rem; color: var(--navy); letter-spacing: 0.01em; }
-  .grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem 1rem;
+  h2 {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 0 0 1rem; font-size: 1.0625rem; color: var(--navy); letter-spacing: 0.01em;
   }
+  .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; flex: none;
+    background: var(--navy); color: #fff; font-size: 0.8125rem; font-weight: 700;
+  }
+
+  /* "This is sample data" cue */
+  .note {
+    margin: 0 0 1.1rem; padding: 0.625rem 0.875rem;
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px;
+    color: #854d0e; font-size: 0.8125rem; line-height: 1.45;
+  }
+  .note b { color: #713f12; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem 1rem; }
   .field { display: flex; flex-direction: column; min-width: 0; }
   .field.full { grid-column: 1 / -1; }
   .phones-grid { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.875rem 1rem; }
@@ -35,6 +59,8 @@
     font-size: 0.75rem; font-weight: 600; margin-bottom: 0.3125rem;
     color: #374151; text-transform: uppercase; letter-spacing: 0.05em;
   }
+  label .opt { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  label .req { color: var(--accent); }
   input[type="text"], input[type="tel"], input[type="url"] {
     width: 100%; max-width: 100%; min-width: 0;
     padding: 0.5625rem 0.75rem;
@@ -44,42 +70,76 @@
     -webkit-appearance: none; appearance: none;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
-  input:focus {
-    outline: none; border-color: var(--navy);
-    box-shadow: 0 0 0 3px rgba(23, 54, 93, 0.15);
-  }
+  input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(1, 66, 106, 0.15); }
   .hint { color: var(--muted); font-size: 0.75rem; margin-top: 0.3125rem; }
+  .legend { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 0.75rem; }
+
+  /* Preview */
+  .cap { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.8125rem; line-height: 1.4; }
   .preview-wrap {
-    background: #fff; border: 1px dashed #cbd5e1; border-radius: 6px;
+    background: #fcfcfd; border: 1px dashed #cbd5e1; border-radius: 6px;
     padding: 1.5rem; min-height: 160px; overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
-  .actions { margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .scroll-hint { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.75rem; }
+
+  /* Actions */
+  .actions { margin-top: 1.25rem; }
   button {
-    font-family: inherit; font-size: 0.9375rem; font-weight: 500;
-    padding: 0.625rem 1rem; border-radius: 6px; cursor: pointer;
-    border: 1px solid var(--navy); background: var(--navy); color: #fff;
-    transition: filter 0.15s, transform 0.05s;
+    font-family: inherit; cursor: pointer; border-radius: 6px;
+    transition: filter 0.15s, transform 0.05s, background 0.15s, border-color 0.15s;
   }
-  button.secondary { background: #fff; color: var(--navy); }
-  button:hover { filter: brightness(1.05); }
+  button.primary {
+    font-size: 1rem; font-weight: 600; padding: 0.75rem 1.5rem;
+    border: 1px solid var(--navy); background: var(--navy); color: #fff;
+  }
+  button.primary:hover { filter: brightness(1.08); }
+  button.primary.copied { background: #15803d; border-color: #15803d; }
+  .advanced { margin-top: 1.1rem; }
+  button.secondary {
+    font-size: 0.875rem; font-weight: 500; padding: 0.5rem 0.875rem;
+    border: 1px solid var(--border); background: #fff; color: var(--muted);
+  }
+  button.secondary:hover { border-color: #9ca3af; color: var(--ink); }
   button:active { transform: translateY(1px); }
+  button:focus-visible { outline: none; box-shadow: 0 0 0 1px #fff, 0 0 0 4px rgba(1, 66, 106, 0.35); }
+  .adv-help { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.45; }
+  .next { display: none; margin: 0.875rem 0 0; font-size: 0.875rem; color: var(--ink); }
+  .next.show { display: block; }
+  .next a { color: var(--navy); font-weight: 600; }
+
+  /* Where to paste it */
+  .paste-intro { margin: 0 0 0.75rem; font-size: 0.875rem; line-height: 1.5; }
+  .paste-steps { margin: 0; padding-left: 1.25rem; font-size: 0.875rem; line-height: 1.6; }
+  .paste-steps li { margin-bottom: 0.4rem; }
+  .paste-steps b { color: var(--navy); }
+
+  .foot { text-align: center; color: var(--muted); font-size: 0.75rem; margin: 1rem 0 0; }
+
+  /* Toast — centered, announced to screen readers */
   .toast {
-    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    position: fixed; bottom: 1.5rem; left: 50%;
     padding: 0.75rem 1rem; background: #111827; color: #fff;
-    border-radius: 6px; font-size: 0.875rem;
-    opacity: 0; transform: translateY(6px);
+    border-radius: 6px; font-size: 0.875rem; max-width: 90vw; text-align: center;
+    opacity: 0; transform: translateX(-50%) translateY(6px);
     transition: opacity 0.2s, transform 0.2s; pointer-events: none;
   }
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .banner { display: none; margin-bottom: 1.25rem; padding: 0.875rem 1rem; background: #fff7ed; border: 1px solid #fb923c; border-radius: 8px; color: #7c2d12; font-size: 0.875rem; line-height: 1.4; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* file:// guidance banner — calm info treatment, not an error alarm */
+  .banner {
+    display: none; margin-bottom: 1.25rem; padding: 0.875rem 1rem;
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+    color: #1e3a5f; font-size: 0.875rem; line-height: 1.5;
+  }
   .banner.show { display: block; }
-  .banner b { color: #431407; }
+  .banner b { color: #0c2a4d; }
+
   @media (max-width: 600px) {
     body { padding: 1rem; }
     .card { padding: 1rem; }
     .grid { grid-template-columns: 1fr; }
     .phones-grid { grid-template-columns: 1fr; }
-    .actions button { flex: 1 1 100%; }
+    .actions button.primary { width: 100%; }
     .preview-wrap { padding: 1rem; }
   }
 </style>
@@ -87,76 +147,110 @@
 <body>
 <div class="app">
   <div class="banner" id="file-banner">
-    <b>Copy-to-clipboard won't work here.</b> This page was opened directly from a file. On iPhone Safari the clipboard API is only available over <b>https</b> or <b>localhost</b>. Host this page online (GitHub Pages, Netlify Drop, etc.) or open it via a local web server.
+    To copy, please open this page from the official web link your team shared — not from a downloaded file.
+    If you need the link, ask whoever sent you here.
   </div>
-  <div class="card">
-    <h1>Signature fields</h1>
+
+  <header class="page-head">
+    <img src="logo-header-2x.png" width="240" height="19" alt="Brand Properties">
+    <h1>Brand Properties Email Signature</h1>
+    <p>Fill in your details below, check the preview, then click Copy and paste it into your email signature settings.</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="step">1</span> Your details</h2>
+    <p class="note"><b>These are sample details.</b> Replace every field with your own before copying — otherwise you'll send a signature with someone else's name on it.</p>
     <div class="grid">
-      <div class="field"><label for="f-name">Name</label><input id="f-name" type="text" value="Hannah Gomez"></div>
-      <div class="field"><label for="f-title">Title</label><input id="f-title" type="text" value="Marketing Coordinator"></div>
-      <div class="field full"><label for="f-tagline">Tagline</label><input id="f-tagline" type="text" value="Management | Leasing | Advisory"></div>
+      <p class="legend"><span style="color:var(--accent)">*</span> Required</p>
+      <div class="field"><label for="f-name">Name <span class="req">*</span></label><input id="f-name" type="text" required value="Hannah Gomez"></div>
+      <div class="field"><label for="f-title">Title <span class="req">*</span></label><input id="f-title" type="text" required value="Marketing Coordinator"></div>
+      <div class="field full">
+        <label for="f-tagline">Services line</label>
+        <input id="f-tagline" type="text" value="Management | Leasing | Advisory">
+        <p class="hint">The standard Brand Properties services line. Most people leave this as-is.</p>
+      </div>
       <div class="field"><label for="f-addr1">Street address</label><input id="f-addr1" type="text" value="6224 Sugarloaf Parkway, Suite 200"></div>
       <div class="field"><label for="f-addr2">City, State ZIP</label><input id="f-addr2" type="text" value="Duluth, GA 30097"></div>
       <div class="phones-grid">
         <div class="field">
-          <label for="f-dphone">Direct phone</label>
+          <label for="f-dphone">Direct line</label>
           <input id="f-dphone" type="tel" inputmode="numeric" autocomplete="tel" value="770-497-6482">
         </div>
         <div class="field">
-          <label for="f-mphone">Mobile phone</label>
+          <label for="f-mphone">Cell</label>
           <input id="f-mphone" type="tel" inputmode="numeric" autocomplete="tel" value="404-307-1955">
         </div>
         <div class="field">
-          <label for="f-ophone">Office phone</label>
+          <label for="f-ophone">Office <span class="opt">(optional)</span></label>
           <input id="f-ophone" type="tel" inputmode="numeric" autocomplete="tel" value="">
         </div>
         <div class="field">
-          <label for="f-fax">Fax</label>
+          <label for="f-fax">Fax <span class="opt">(optional)</span></label>
           <input id="f-fax" type="tel" inputmode="numeric" autocomplete="tel" value="">
         </div>
+        <p class="hint" style="grid-column:1/-1;">Fill in only the numbers you want shown — blank ones are left out of your signature.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h1>Preview</h1>
+  <section class="card">
+    <h2><span class="step">2</span> Check the preview, then copy</h2>
+    <p class="cap">This is exactly how your signature will look to people who receive your emails.</p>
     <div class="preview-wrap"><div id="sig"></div></div>
+    <p class="scroll-hint">Shown true-to-size — scroll sideways if it runs past the edge on a small screen.</p>
     <div class="actions">
-      <button id="btn-copy-rich" type="button">Copy formatted signature</button>
-      <button id="btn-copy-html" class="secondary" type="button">Copy HTML source</button>
+      <button id="btn-copy-rich" class="primary" type="button">Copy signature</button>
+      <p class="next" id="next-step">Copied. Now scroll down to <a href="#where">Where to paste it</a> and follow the steps for your email app.</p>
+      <div class="advanced">
+        <button id="btn-copy-html" class="secondary" type="button">Copy code (for signature tools)</button>
+        <p class="adv-help">Most people should use <b>Copy signature</b> — it pastes the finished signature straight into Gmail, Outlook, or Apple Mail. Only use <b>Copy code</b> if your email tool specifically asks you to paste HTML code.</p>
+      </div>
     </div>
-    <p class="hint" style="margin-top:0.875rem;">
-      After clicking <b>Copy formatted signature</b>, paste into Gmail / Outlook / Apple Mail signature settings.
-      The <b>HTML source</b> button is for signature tools that accept raw markup.
-    </p>
-  </div>
-  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v1 &middot; build 50</p>
+  </section>
+
+  <section class="card" id="where">
+    <h2>Where to paste it</h2>
+    <p class="paste-intro">After you click <b>Copy signature</b>, open your email's signature settings and paste (<b>Ctrl+V</b> on Windows, <b>Cmd+V</b> on Mac):</p>
+    <ul class="paste-steps">
+      <li><b>Gmail:</b> gear icon → See all settings → General tab → scroll to <i>Signature</i> → Create new → paste → <b>Save Changes</b> at the bottom.</li>
+      <li><b>Outlook (new / web):</b> gear icon → Account → Signatures → New signature → paste → Save.</li>
+      <li><b>Apple Mail (Mac):</b> Mail menu → Settings → Signatures → click <b>+</b> → uncheck “Always match my default message font” → paste.</li>
+    </ul>
+  </section>
+
+  <p class="foot">v1 &middot; build 51</p>
 </div>
 
-<div class="toast" id="toast">Copied</div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">Copied</div>
 
 <script>
 (() => {
-  // Logo: SINGLE hosted retina PNG over https. NOT base64, NOT SVG — Gmail (web/iOS/Android) and
-  // new Outlook block base64 data: URIs, Gmail can't render SVG, and Microsoft retired inline SVG in
-  // Outlook.com / new Outlook (2025). A hosted PNG renders everywhere. Host a transparent 2x (500x40)
-  // or 3x (750x60) PNG and point LOGO_URL at it; it is displayed at 250x20.
-  // Hosted on GitHub Pages: logo-header-2x.png (750x60 transparent, 3x) committed at repo root.
+  // ============================================================
+  // SECTION 1 — EMAIL SIGNATURE TEMPLATE
+  //   DO NOT EDIT without cross-client testing (Gmail, Outlook, Apple Mail).
+  //   Everything in this section produces the actual signature markup that
+  //   gets pasted into email clients. It is table-based with inline styles and
+  //   mso-* hints on purpose — email clients (esp. Outlook/Word) need that.
+  // ============================================================
+
+  // Logo: a SINGLE hosted retina PNG over https — never base64 or SVG. Gmail (all
+  // platforms) and new Outlook block base64 data: URIs, and Gmail can't render SVG,
+  // so a hosted PNG is the only thing that renders everywhere. Source is 4x
+  // (1000x80, transparent) displayed at 250x20 for sharpness on mobile/Retina.
   const LOGO_URL = "https://lasswellt.github.io/brand-signature/logo-header-2x.png";
-  const FONT = "'Times New Roman', Times, serif";
-  const NAVY = "#01426A";
-  const ACCENT = "#963821";
+  const FONT     = "'Times New Roman', Times, serif";
+  const NAVY     = "#01426A";   // keep in sync with the literal in FONT_STYLE below
+  const ACCENT   = "#963821";
   const SITE_URL = "https://www.brandproperties.com/";
 
-  // Times New Roman ships everywhere — no @font-face needed. Style block carries dark-mode swap only.
-  // MSO conditional ensures classic Outlook keeps the italic serif treatment instead of falling back to Word default.
-  // Classic Outlook (Word engine) applies its built-in Hyperlink character style to every <a>, overriding
-  // inline font-family. Fix (per goodemailcode.com / Email on Acid): inline mso-ascii-font-family on every
-  // styled element. The stylesheet-level [if mso] block is dropped because Outlook's signature paste flow
-  // strips <style> blocks unpredictably — everything MSO-specific now lives inline.
-  // `<!--[if mso]>…<![endif]-->` conditional: Word parses these stylesheets and honors !important at the
-  // stylesheet level, unlike inline !important which Word's CSS parser ignores. Overrides the built-in
-  // Hyperlink character style that otherwise forces an underline on every <a>.
+  // Two stylesheets ride along with the signature:
+  //   1. A <style> dark-mode swap (.bp-navy -> lighter blue). Apple Mail honors it;
+  //      Gmail/Outlook.com strip <style> on paste, so the inline navy is the fallback.
+  //   2. An [if mso] <style> block that IS emitted for classic Outlook: Word applies
+  //      its built-in Hyperlink character style (underline + theme color) to every <a>
+  //      and ignores inline !important, so the underline/color override must live in a
+  //      stylesheet. Per-element inline mso-ascii-font-family (MSO, below) is ALSO used
+  //      to hold Times New Roman against Word's defaults. Both are needed together.
   const FONT_STYLE = `<style>@media (prefers-color-scheme: dark){.bp-navy{color:#6FA8DC !important;}}</style><!--[if mso]><style>a,a:link,a:visited{text-decoration:none !important;color:#01426A !important;}</style><![endif]-->`;
   const FONT_PLAIN = "Times New Roman, Times, serif";
   const MSO = `mso-ascii-font-family:${FONT_PLAIN};mso-hansi-font-family:${FONT_PLAIN};mso-bidi-font-family:${FONT_PLAIN};`;
@@ -164,12 +258,18 @@
   const LINK_STYLE = `color:${NAVY};text-decoration:none !important;text-underline:none;font-style:italic;font-family:${FONT};${MSO}font-size:11pt;border:0;`;
   const SPAN_RESET = `color:${NAVY};text-decoration:none !important;text-underline:none;font-style:italic;font-family:${FONT};${MSO}font-size:11pt;`;
 
-  const sig = document.getElementById('sig');
-  const toast = document.getElementById('toast');
-  if (location.protocol === 'file:') document.getElementById('file-banner').classList.add('show');
-
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
   const telDigits = s => String(s).replace(/\D/g, '');
+
+  // tel: href for North American numbers. 10 digits -> +1XXXXXXXXXX; 11 digits
+  // starting with 1 -> strip the leading 1; anything else (7-digit, extensions)
+  // -> tel:<rawdigits> without forcing a wrong +1 country code.
+  const telHref = num => {
+    const n = telDigits(num);
+    if (/^1\d{10}$/.test(n)) return 'tel:+1' + n.slice(1);
+    if (n.length === 10)     return 'tel:+1' + n;
+    return 'tel:' + n;
+  };
 
   const row = (color, body, bold=false, size='11pt', italic=true) => {
     const weight = bold ? 'font-weight:bold;' : '';
@@ -185,40 +285,57 @@
     if (data.ophone) phoneRows.push({num: data.ophone, label: '(Office)'});
     if (data.fax)    phoneRows.push({num: data.fax,    label: '(Fax)', noLink: true});
     const lines = [
-      row(NAVY,   esc(data.name), true, '14pt'),
-      row(ACCENT, esc(data.title), true, '11pt', false),  // Title: bold, NOT italic (per Brian)
+      ...(data.name  ? [row(NAVY,   esc(data.name), true, '14pt')] : []),
+      ...(data.title ? [row(ACCENT, esc(data.title), true, '11pt', false)] : []),  // Title: bold, NOT italic (per Brian)
       ...(data.tagline ? [row(ACCENT, esc(data.tagline) + '&nbsp;')] : []),
-      row(NAVY,   esc(data.addr1) + '&nbsp;'),
-      row(NAVY,   esc(data.addr2)),
-      ...phoneRows.map((p, i) => {
+      row(NAVY, esc(data.addr1) + '&nbsp;'),
+      row(NAVY, esc(data.addr2)),
+      ...phoneRows.map((p) => {
         const numHtml = `<font face="${FONT_PLAIN}">${esc(p.num)}</font>`;
         if (p.noLink) {
           return row(NAVY, `<span style="${SPAN_RESET}">${numHtml}</span>&nbsp;${p.label}`);
         }
-        const n = telDigits(p.num);
-        return row(NAVY, `<a href="tel:+1${n}" style="${LINK_STYLE}"><span style="${SPAN_RESET}">${numHtml}</span></a>&nbsp;${p.label}`);
+        return row(NAVY, `<a href="${telHref(p.num)}" style="${LINK_STYLE}"><span style="${SPAN_RESET}">${numHtml}</span></a>&nbsp;${p.label}`);
       }),
     ].join('');
-    // Single hosted retina PNG over https — no base64, no SVG, no Outlook-conditional branches.
-    // Gmail (all platforms) and new Outlook block base64 data: URIs; Gmail can't render SVG; Microsoft
-    // retired inline SVG in Outlook.com/new Outlook (2025). A hosted PNG renders in every target client.
-    // Outlook (Word) clips the image bottom when line-height < image height, so pin line-height to the
-    // 20px image height (mso-line-height-rule:exactly) — fixes the "cut off at the bottom" report.
-    // Small padding-top (2px) keeps the gap tight per feedback ("large gap... push the logo up").
+    // Outlook (Word) clips the image bottom when line-height < image height, so pin
+    // line-height to the 20px image height. Small padding-top keeps the gap tight.
     const logo = `<tr><td style="padding:2px 0 0 0;font-size:0;line-height:20px;mso-line-height-rule:exactly;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;text-decoration:none;line-height:20px;"><img src="${esc(LOGO_URL)}" width="250" height="20" alt="BrandProperties.com" style="display:block;width:250px;height:20px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}line-height:1.25;">${lines}${logo}</table>`;
   }
 
+  // ============================================================
+  // SECTION 2 — PAGE UI (safe to edit)
+  //   Form reading, live preview, copy-to-clipboard, toast, file:// banner.
+  //   Nothing here affects the generated signature except via the form values.
+  // ============================================================
+
+  const sig = document.getElementById('sig');
+  const toast = document.getElementById('toast');
+  const btnRich = document.getElementById('btn-copy-rich');
+  const btnHtml = document.getElementById('btn-copy-html');
+  const nextStep = document.getElementById('next-step');
+
+  // Show the guidance banner only when opened from a saved file (clipboard API
+  // is unavailable over file://). Stays hidden on the hosted https page.
+  if (location.protocol === 'file:') document.getElementById('file-banner').classList.add('show');
+
   const fieldIds = ['name','title','tagline','addr1','addr2','dphone','mphone','ophone','fax'];
-  function read() {
+  const read = () => {
     const data = {};
     fieldIds.forEach(k => { data[k] = document.getElementById('f-' + k).value; });
     return data;
-  }
-  function render() { sig.innerHTML = build(read()); }
+  };
+  const render = () => { sig.innerHTML = build(read()); };
   fieldIds.forEach(k => document.getElementById('f-' + k).addEventListener('input', render));
-  const formatPhone = (e) => { const v = e.target.value.replace(/\D/g, ''); e.target.value = v.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12); render(); };
-  ['dphone', 'mphone', 'ophone'].forEach(k => document.getElementById('f-' + k).addEventListener('input', formatPhone));
+
+  // Auto-format the four phone-shaped fields as the user types (display only).
+  const formatPhone = (e) => {
+    const v = e.target.value.replace(/\D/g, '');
+    e.target.value = v.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12);
+    render();
+  };
+  ['dphone', 'mphone', 'ophone', 'fax'].forEach(k => document.getElementById('f-' + k).addEventListener('input', formatPhone));
   render();
 
   let toastTimer;
@@ -226,7 +343,24 @@
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  const COPY_FAIL = "Copy didn't work — please open the official link instead of a saved file.";
+
+  // Funnel a clipboard promise through one success/failure reporter.
+  const reportCopy = (promise, okMsg) => promise.then(() => showToast(okMsg)).catch(() => showToast(COPY_FAIL));
+
+  let copiedTimer;
+  function flashCopied() {
+    btnRich.classList.add('copied');
+    btnRich.textContent = 'Copied!';
+    nextStep.classList.add('show');
+    clearTimeout(copiedTimer);
+    copiedTimer = setTimeout(() => {
+      btnRich.classList.remove('copied');
+      btnRich.textContent = 'Copy signature';
+    }, 1800);
   }
 
   function fallbackCopySelection() {
@@ -241,30 +375,29 @@
     return ok;
   }
 
-  document.getElementById('btn-copy-rich').addEventListener('click', () => {
+  // Primary: copy the rendered signature as rich text (text/html + text/plain).
+  btnRich.addEventListener('click', () => {
     const html = sig.innerHTML;
     const text = sig.innerText;
+    const onOk = () => { showToast('Signature copied — now paste it using the steps below.'); flashCopied(); };
     if (navigator.clipboard && window.ClipboardItem) {
       const item = new ClipboardItem({
         'text/html':  Promise.resolve(new Blob([html], { type: 'text/html' })),
         'text/plain': Promise.resolve(new Blob([text], { type: 'text/plain' })),
       });
-      navigator.clipboard.write([item])
-        .then(() => showToast('Signature copied — paste into your email editor'))
-        .catch(() => showToast('Copy failed — open this page via https or localhost'));
+      navigator.clipboard.write([item]).then(onOk).catch(() => showToast(COPY_FAIL));
     } else {
-      showToast(fallbackCopySelection() ? 'Signature copied' : 'Copy failed — select signature manually');
+      if (fallbackCopySelection()) onOk();
+      else showToast('Copy didn\'t work — select the signature above and copy it manually.');
     }
   });
 
-  document.getElementById('btn-copy-html').addEventListener('click', () => {
-    const src = sig.innerHTML;
+  // Advanced: copy the raw HTML for signature tools that ask for code.
+  btnHtml.addEventListener('click', () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(src)
-        .then(() => showToast('HTML source copied'))
-        .catch(() => showToast('Copy failed — open this page via https or localhost'));
+      reportCopy(navigator.clipboard.writeText(sig.innerHTML), 'Code copied.');
     } else {
-      showToast('Copy requires https or localhost — opening via file:// is not supported');
+      showToast(COPY_FAIL);
     }
   });
 })();
