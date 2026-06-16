@@ -79,18 +79,20 @@
       <b>Gmail / Apple Mail / new Outlook:</b> click <b>Copy formatted signature</b> and paste into the client's signature settings.
     </p>
   </div>
-  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 49</p>
+  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 55</p>
 </div>
 
 <div class="toast" id="toast">Copied</div>
 
 <script>
 (() => {
-  // Logo: SINGLE hosted retina PNG over https. NOT base64, NOT SVG — Gmail (web/iOS/Android) and
-  // new Outlook block base64 data: URIs, Gmail can't render SVG, and Microsoft retired inline SVG in
-  // Outlook.com / new Outlook (2025). A hosted PNG renders everywhere. Host a transparent 2x (500x40)
-  // or 3x (750x60) PNG and point LOGO_URL at it; it is displayed at 250x20.
-  // Hosted on GitHub Pages: logo-header-2x.png (750x60 transparent, 3x) committed at repo root.
+  // Logo: SINGLE hosted PNG over https. NOT base64, NOT SVG — Gmail (web/iOS/Android) and new
+  // Outlook block base64 data: URIs, Gmail can't render SVG, and Microsoft retired inline SVG in
+  // Outlook.com / new Outlook (2025). A hosted PNG renders everywhere.
+  // Delivered at 1x (250x36 intrinsic) — do NOT swap in a 2x/3x oversample: forwards strip the
+  // width/height markup and the image then renders at its intrinsic size, so an oversample
+  // explodes to 2-4x. DPI metadata can't help (clients map 1 img px -> 1 CSS px, ignore pHYs).
+  // Hosted on GitHub Pages: logo-header-2x.png (250x36, 1x; legacy "-2x" name kept for URL stability).
   const LOGO_URL = "https://lasswellt.github.io/brand-signature/logo-header-2x.png";
   const FONT   = "'Montserrat', 'Helvetica Neue', Helvetica, 'Trebuchet MS', Arial, sans-serif";
   // Montserrat is self-hosted as WOFF2 (weights 400/500/700, latin subset) — committed under fonts/ in
@@ -189,7 +191,7 @@
         return body(`<a href="tel:+1${n}" style="${linkStyle}"><span style="${spanStyle}">${numHtml}</span></a>&nbsp;${p.label}`, pad);
       }),
     ].join('');
-    // Single hosted retina PNG over https — no base64, no SVG, no Outlook-conditional branches.
+    // Single hosted 1x PNG over https — no base64, no SVG, no Outlook-conditional branches.
     // Gmail (all platforms) and new Outlook block base64 data: URIs; Gmail can't render SVG; Microsoft
     // retired inline SVG in Outlook.com/new Outlook (2025). A hosted PNG renders in every target client.
     // font-size:0 + line-height:0 on a display:block image kills the Outlook image gap / top-clip.

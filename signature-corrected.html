@@ -2,7 +2,7 @@
   Brand Properties email signature — corrected, paste-safe HTML snippet
   ===================================================================
   Paste this into the Gmail / Outlook / Apple Mail signature editor.
-  Logo is a SINGLE hosted retina PNG over HTTPS — NO base64, NO SVG.
+  Logo is a SINGLE hosted PNG over HTTPS — NO base64, NO SVG.
   Rationale (verified against caniemail.com raw data, 2026-06-15):
     - Gmail (web + iOS + Android) does NOT render base64 data: URIs  -> base64 logo = broken
     - New Outlook for Windows does NOT render base64                 -> base64 logo = broken
@@ -21,8 +21,9 @@
     {{MOBILE_PHONE}}  mobile phone, display format    e.g. 404-307-1955
     {{MOBILE_DIGITS}} mobile phone, E.164 for tel:    e.g. +14043071955
     {{SITE_URL}}      absolute https site URL         e.g. https://www.brandproperties.com/
-    {{LOGO_URL_2X}}   absolute https URL to a transparent retina PNG
-                      (export at 500x40 @2x or 750x60 @3x; displayed at 250x20)
+    {{LOGO_URL_2X}}   absolute https URL to a transparent PNG
+                      (export at 1x = the display size, e.g. 250x36; intrinsic px MUST
+                       equal display px so forwards that strip width/height don't blow it up)
 
   Dark mode: the <style> block below is a BEST-EFFORT progressive enhancement.
   Apple Mail (and some Outlook desktop) keep it and swap navy -> lighter blue on a
