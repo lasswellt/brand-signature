@@ -79,7 +79,7 @@
       <b>Gmail / Apple Mail / new Outlook:</b> click <b>Copy formatted signature</b> and paste into the client's signature settings.
     </p>
   </div>
-  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 57</p>
+  <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin:1rem 0 0;">v2 &middot; build 58</p>
 </div>
 
 <div class="toast" id="toast">Copied</div>
@@ -89,10 +89,10 @@
   // Logo: SINGLE hosted PNG over https. NOT base64, NOT SVG — Gmail (web/iOS/Android) and new
   // Outlook block base64 data: URIs, Gmail can't render SVG, and Microsoft retired inline SVG in
   // Outlook.com / new Outlook (2025). A hosted PNG renders everywhere.
-  // Delivered at 1x (250x40 intrinsic; 12px top cushion absorbs Outlook Classic top-clip) — do NOT swap in a 2x/3x oversample: forwards strip the
+  // Delivered at 1x (250x37 intrinsic; 9px top cushion absorbs Outlook Classic top-clip) — do NOT swap in a 2x/3x oversample: forwards strip the
   // width/height markup and the image then renders at its intrinsic size, so an oversample
   // explodes to 2-4x. DPI metadata can't help (clients map 1 img px -> 1 CSS px, ignore pHYs).
-  // Hosted on GitHub Pages: logo-header-2x.png (250x40, 1x; legacy "-2x" name kept for URL stability).
+  // Hosted on GitHub Pages: logo-header-2x.png (250x37, 1x; legacy "-2x" name kept for URL stability).
   const LOGO_URL = "https://lasswellt.github.io/brand-signature/logo-header-2x.png";
   const FONT   = "'Montserrat', 'Helvetica Neue', Helvetica, 'Trebuchet MS', Arial, sans-serif";
   // Montserrat is self-hosted as WOFF2 (weights 400/500/700, latin subset) — committed under fonts/ in
@@ -195,7 +195,7 @@
     // Gmail (all platforms) and new Outlook block base64 data: URIs; Gmail can't render SVG; Microsoft
     // retired inline SVG in Outlook.com/new Outlook (2025). A hosted PNG renders in every target client.
     // font-size:0 + line-height:0 on a display:block image kills the Outlook image gap / top-clip.
-    const logo = `<tr><td valign="bottom" style="padding:0;font-size:0;line-height:0;mso-line-height-rule:exactly;vertical-align:bottom;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;text-decoration:none;line-height:0;"><img src="${esc(LOGO_URL)}" width="250" height="40" alt="BrandProperties.com" style="display:block;width:250px;height:40px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
+    const logo = `<tr><td valign="bottom" style="padding:0;font-size:0;line-height:0;mso-line-height-rule:exactly;vertical-align:bottom;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;text-decoration:none;line-height:0;"><img src="${esc(LOGO_URL)}" width="250" height="37" alt="BrandProperties.com" style="display:block;width:250px;height:37px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></a></td></tr>`;
     return `${FONT_STYLE}<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:${FONT};${MSO}">${rows}${logo}</table>`;
   }
 
