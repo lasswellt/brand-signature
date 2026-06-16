@@ -153,7 +153,7 @@
   </div>
 
   <header class="page-head">
-    <img src="logo-header-2x.png" width="250" height="37" alt="Brand Properties">
+    <img src="logo-header-2x.png" width="250" height="39" alt="Brand Properties">
     <h1>Brand Properties Email Signature</h1>
     <p>Fill in your details below, check the preview, then click Copy and paste it into your email signature settings.</p>
   </header>
@@ -219,7 +219,7 @@
     </ul>
   </section>
 
-  <p class="foot">v1 &middot; build 58</p>
+  <p class="foot">v1 &middot; build 59</p>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">Copied</div>
@@ -236,7 +236,7 @@
 
   // Logo: a SINGLE hosted PNG over https — never base64 or SVG. Gmail (all platforms)
   // and new Outlook block base64 data: URIs, and Gmail can't render SVG.
-  // Delivered at 1x: the PNG is 250x37 — its intrinsic pixels EQUAL the display size.
+  // Delivered at 1x: the PNG is 250x39 — its intrinsic pixels EQUAL the display size.
   // This is deliberate and must NOT be "upgraded" to a 2x/3x retina oversample: when a
   // recipient forwards/replies, Outlook & others strip the width/height markup, and the
   // image then renders at its INTRINSIC size. A 1000x144 (4x) source rendered this size
@@ -244,7 +244,7 @@
   // (DPI/pHYs metadata can't substitute for pixels: clients map 1 img px -> 1 CSS px and
   // ignore the DPI tag, so retina crispness only ever comes from more pixels = the very
   // thing that breaks forwarding. We trade a little retina sharpness for forward-safety.)
-  // The wordmark (~21px tall) sits flush-left with 9px transparent padding ABOVE it and
+  // The wordmark (~21px tall) sits flush-left with 11px transparent padding ABOVE it and
   // ~7px below — the big TOP cushion is load-bearing: Outlook Classic's Word engine shears
   // ~8-10px off the TOP of the image, so the cushion absorbs the clip instead of the
   // letters. Do NOT shrink the top padding (that reintroduced the top-clip at build 55).
@@ -321,7 +321,7 @@
     //   4. width/height as HTML ATTRIBUTES (DPI-immune in Word) + matching inline CSS
     //   5. ~8px transparent padding baked into the PNG so any residual clip eats empty pixels
     // Gap above the logo is set by the cell's padding-top, NEVER by line-height.
-    const logoCell = `<td class="bp-logo-cell" align="left" valign="top" style="padding:0;font-size:0;line-height:0;mso-line-height-rule:exactly;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;outline:none;text-decoration:none;"><img src="${esc(LOGO_URL)}" width="250" height="37" alt="BrandProperties.com" border="0" style="display:block;width:250px;height:37px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;font-size:0;line-height:0;"></a></td>`;
+    const logoCell = `<td class="bp-logo-cell" align="left" valign="top" style="padding:0;font-size:0;line-height:0;mso-line-height-rule:exactly;"><a href="${esc(SITE_URL)}" target="_blank" style="display:block;border:0;outline:none;text-decoration:none;"><img src="${esc(LOGO_URL)}" width="250" height="39" alt="BrandProperties.com" border="0" style="display:block;width:250px;height:39px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;font-size:0;line-height:0;"></a></td>`;
 
     // Outer wrapper stacks text (row 1) above logo (row 2) so the logo cell is a sibling ROW,
     // never sharing the text cells' line-box.
